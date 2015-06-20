@@ -24,6 +24,16 @@
 
 #import <Foundation/Foundation.h>
 
+
+/**
+ *  过滤方法
+ *
+ *  @param filename 文件名
+ *
+ *  @return YES - 过滤， NO - 不过滤
+ */
+typedef BOOL(^DMSearchFileFilterBlock)(NSString *filename);
+
 /**
  *  搜索文件代理
  */
@@ -37,7 +47,7 @@
  *
  *  @return YES - 过滤, NO - 不过滤
  */
-- (BOOL)filterFile:(NSString *)path;
+- (BOOL)filterFile:(NSString *)filename;
 
 @end
 
@@ -49,11 +59,6 @@
 @interface DMSearchFile : NSObject
 
 /**
- *  代理
- */
-@property(nonatomic, weak) id<DMSearchFileDelegate> delegate;
-
-/**
  *  搜索文件
  *
  *  @param searchPath 搜索路径
@@ -62,17 +67,7 @@
  *
  *  @return 搜索到的文件数组
  */
-+ (NSArray *)searchFile:(NSString *)searchPath ext:(NSString *)ext delegate:(id<DMSearchFileDelegate>)delegate;
-
-/**
- *  搜索文件
- *
- *  @param searchPath 搜索路径
- *  @param ext        后缀名
- *  @param delegate   代理
- *
- *  @return 搜索到的文件数组
- */
-- (NSArray *)searchFile:(NSString *)searchPath ext:(NSString *)ext delegate:(id<DMSearchFileDelegate>)delegate;
++ (NSArray *)searchFileWithPath:(NSString *)searchPath ext:(NSString *)ext delegate:(id<DMSearchFileDelegate>)delegate;
++ (NSArray *)searchFileWithPath:(NSString *)searchPath ext:(NSString *)ext filterBlock:(DMSearchFileFilterBlock)filterBlock;
 
 @end

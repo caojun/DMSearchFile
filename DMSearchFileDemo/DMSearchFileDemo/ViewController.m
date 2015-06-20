@@ -41,7 +41,16 @@
 
 - (void)searchFile
 {
-    NSArray *fileArray = [DMSearchFile searchFile:self.filePath ext:nil delegate:self];
+//    NSArray *fileArray = [DMSearchFile searchFileWithPath:self.filePath ext:nil delegate:self];
+    
+    NSArray *fileArray = [DMSearchFile searchFileWithPath:self.filePath ext:nil filterBlock:^BOOL(NSString *file) {
+        if ([file hasPrefix:@"2"])
+        {
+            return YES;
+        }
+        
+        return NO;
+    }];
     
     self.m_dataArray = fileArray;
     
@@ -52,13 +61,13 @@
 /**
  *  过滤方法
  *
- *  @param path 文件路径
+ *  @param filename 文件名
  *
  *  @return YES - 过滤, NO - 不过滤
  */
-- (BOOL)filterFile:(NSString *)path
+- (BOOL)filterFile:(NSString *)filename
 {
-    if ([path hasPrefix:@"1"])
+    if ([filename hasPrefix:@"1"])
     {
         return YES;
     }

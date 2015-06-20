@@ -33,23 +33,23 @@
 
 @implementation DMSearchFile
 
-/**
- *  搜索文件
- *
- *  @param searchPath 搜索路径
- *  @param ext        后缀名
- *  @param delegate   代理
- *
- *  @return 搜索到的文件数组
- */
-+ (NSArray *)searchFile:(NSString *)searchPath ext:(NSString *)ext delegate:(id<DMSearchFileDelegate>)delegate
+
++ (NSArray *)searchFileWithPath:(NSString *)searchPath ext:(NSString *)ext delegate:(id<DMSearchFileDelegate>)delegate
+{
+    return [self searchFileWithPath:searchPath ext:ext delegate:delegate filterBlock:nil];
+}
+
++ (NSArray *)searchFileWithPath:(NSString *)searchPath ext:(NSString *)ext filterBlock:(DMSearchFileFilterBlock)filterBlock
+{
+    return [self searchFileWithPath:searchPath ext:ext delegate:nil filterBlock:filterBlock];
+}
+
++ (NSArray *)searchFileWithPath:(NSString *)searchPath ext:(NSString *)ext delegate:(id<DMSearchFileDelegate>)delegate filterBlock:(DMSearchFileFilterBlock)filterBlock
 {
     if (nil == searchPath)
     {
         return nil;
     }
-    
-    NSLog(@">>> searchPath = %@, ext = %@", searchPath, ext);
     
     NSError *error = nil;
     NSMutableArray *array = [NSMutableArray array];
@@ -66,7 +66,7 @@
     }
     
     BOOL suffixFlag = NO;
-    for (NSString *path in dirList)
+    for (NSString *filename in dirList)
     {
         if ([extTmp isEqualToString:@"*"])
         {
@@ -74,48 +74,32 @@
         }
         else
         {
-            suffixFlag = [path hasSuffix:extTmp];
+            suffixFlag = [filename hasSuffix:extTmp];
         }
         
         if (suffixFlag)
         {
             if (nil != delegate)
             {
-                if ([delegate respondsToSelector:@selector(filterFile:)] && ![delegate filterFile:path])
+                if ([delegate respondsToSelector:@selector(filterFile:)] && ![delegate filterFile:filename])
                 {
-                    [array addObject:path];
+                    [array addObject:filename];
+                }
+            }
+            else if (NULL != filterBlock)
+            {
+                if (!filterBlock(filename))
+                {
+                    [array addObject:filename];
                 }
             }
             else
             {
-                [array addObject:path];
+                [array addObject:filename];
             }
         }
     }
     
-    return array;
-}
-
-/**
- *  搜索文件
- *
- *  @param searchPath 搜索路径
- *  @param ext        后缀名
- *  @param delegate   代理
- *
- *  @return 搜索到的文件数组
- */
-- (NSArray *)searchFile:(NSString *)searchPath ext:(NSString *)ext delegate:(id<DMSearchFileDelegate>)delegate
-{
-    if (nil == searchPath)
-    {
-        return nil;
-    }
-    
-    self.delegate = delegate;
-    
-    NSArray *array = [DMSearchFile searchFile:searchPath ext:ext delegate:delegate];
-
     return array;
 }
 
