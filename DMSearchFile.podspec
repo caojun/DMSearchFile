@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
 
   s.name         = "DMSearchFile"
   s.version      = "0.0.2"
-  s.summary      = ""
+  s.summary      = "根据文件名搜索文件"
 
   s.description  = <<-DESC
                    A longer description of DMSearchFile in Markdown format.
